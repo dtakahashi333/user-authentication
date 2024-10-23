@@ -1,0 +1,29 @@
+{
+  "name": "username-password-tutorial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-sqlite3": "^0.9.15",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "cypress": "^13.14.2"
+  }
+}

@@ -1,0 +1,13 @@
+# Visual Studio Code
+.vscode
+
+# NPM
+node_modules
+
+# Self-signed TSL certificates
+sslcert
+
+# Temporary files
+var
+
+users.json
