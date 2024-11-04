@@ -10,6 +10,7 @@ const http = require("http");
 const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const _ = require("lodash");
 
 const employeesRouter = require("./routes/employees");
 const authRouter = require("./routes/auth");
@@ -21,12 +22,68 @@ app.use(cookieParser());
 
 // Security
 
-// Accept Cross-Origin-Resource-Sharing from any sites
+// Accept Cross-Origin-Resource-Sharing
+const originAllowlist = ["http://localhost:5173", "http://localhost:4200"];
+const methodAllowlist = ["GET", "POST", "DELETE", "OPTIONS"];
+
+function isPreflight(req) {
+  return (
+    req.method == "OPTIONS" &&
+    req.get("Origin") != "" &&
+    req.get("Access-Control-Request-Method") != ""
+  );
+}
+
+// https://eli.thegreenplace.net/2023/introduction-to-cors-for-go-programmers/
+// https://stackoverflow.com/questions/22972066/how-to-handle-preflight-cors-requests-on-a-go-server
+// https://cors-errors.info/error-messages
+// https://github.com/rs/cors/blob/master/cors.go
+// https://github.com/expressjs/cors/blob/master/lib/index.js
+function checkCORS(options) {
+  const allowedOrigins = options.origin || [];
+  const allowedMethods = options.method || [];
+  return (req, res, next) => {
+    if (isPreflight(req)) {
+      const origin = req.get("Origin");
+      const method = req.get("Access-Control-Request-Method");
+      const reqHeaders = req.get("Access-Control-Request-Headers");
+      if (
+        _.includes(allowedOrigins, origin) &&
+        _.includes(allowedMethods, method)
+      ) {
+        res.set("Access-Control-Allow-Origin", origin);
+        res.set("Access-Control-Allow-Methods", allowedMethods.join(", "));
+        if (reqHeaders) {
+          res.set("Access-Control-Allow-Headers", reqHeaders);
+        }
+        res.set("Vary", "Origin");
+        res.set("Content-Length", "0");
+      }
+      res.end();
+    } else {
+      // Not a preflight: regular request.
+      const origin = req.get("Origin");
+      if (_.includes(allowedOrigins, origin)) {
+        res.set("Access-Control-Allow-Origin", origin);
+        res.set("Vary", "Origin");
+      }
+      next();
+    }
+  };
+}
+
 app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:4200"],
+  checkCORS({
+    // origin: originAllowlist,
+    // method: methodAllowlist,
   })
 );
+
+// app.use(
+//   cors({
+//     origin: originAllowlist,
+//   })
+// );
 
 // Reduce fingerprinting
 app.disable("x-powered-by");

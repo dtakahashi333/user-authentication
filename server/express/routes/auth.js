@@ -100,11 +100,18 @@ router.post("/users/create/user", (req, res) => {
 
     const usersJson = path.join(process.cwd(), "users.json");
 
-    const users = JSON.parse(
-      fs.readFileSync(usersJson, {
-        encoding: "utf-8",
-      })
-    );
+    let users = null;
+    try {
+      users = JSON.parse(
+        fs.readFileSync(usersJson, {
+          encoding: "utf-8",
+        })
+      );
+    } catch (err) {
+      // The users.json file has not been created yet.
+      users = [];
+    }
+
     const user = users.find((user) =>
       new RegExp(`^${_.escapeRegExp(user)}$`, "i").test(username)
     );
