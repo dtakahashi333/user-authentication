@@ -1,0 +1,54 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+
+  /* background-color: pink; */
+}
+
+.register-box {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  width: 400px;
+  /* height: 650px; */
+  padding: 48px 32px;
+
+  border-radius: 10px;
+
+  /* background-color: lightblue; */
+
+  box-shadow: 0 -1px 3px 0 rgb(0 0 0 / 0.1), 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+.form {
+  width: 100%;
+}
+
+
+.email {
+  padding-bottom: 12px;
+  width: 100%;
+}
+.confirm-email {
+  padding-bottom: 24px;
+  width: 100%;
+}
+
+.verify-button {
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+}

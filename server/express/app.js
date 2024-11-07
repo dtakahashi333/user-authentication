@@ -14,6 +14,7 @@ const _ = require("lodash");
 
 const employeesRouter = require("./routes/employees");
 const authRouter = require("./routes/auth");
+const emailRouter = require("./routes/email");
 
 // const port = 443
 const port = process.env.PORT || 3333;
@@ -74,8 +75,8 @@ function checkCORS(options) {
 
 app.use(
   checkCORS({
-    // origin: originAllowlist,
-    // method: methodAllowlist,
+    origin: originAllowlist,
+    method: methodAllowlist,
   })
 );
 
@@ -185,6 +186,7 @@ app.use(passport.authenticate("session"));
 
 app.use("/", employeesRouter);
 app.use("/", authRouter);
+app.use("/", emailRouter);
 
 // How to make a Self-Signed SSL.
 // https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu

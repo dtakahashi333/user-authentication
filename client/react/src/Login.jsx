@@ -144,7 +144,7 @@ function Login() {
           <section className={styles["create-account"]}>
             <p>
               Don't have an account yet?{" "}
-              <Link to="/register">Create Account.</Link>
+              <Link to="/verify-email">Create Account.</Link>
             </p>
           </section>
         </div>

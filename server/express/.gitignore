@@ -10,4 +10,6 @@ sslcert
 # Temporary files
 var
 
+.env
 users.json
+emails.json

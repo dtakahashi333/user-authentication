@@ -10,6 +10,7 @@ import Home from "./Home.jsx";
 import Login from "./Login.jsx";
 import ErrorPage from "./ErrorPage.jsx";
 import RegisterUser from "./RegisterUser.jsx";
+import VerifyEmail from "./VerifyEmail.jsx";
 
 const isAuthenticated = () => {
   // Check if the user is authenticated, e.g., by checking a token in local storage.
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <RegisterUser />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />,
   },
   {
     path: "/",

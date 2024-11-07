@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import styles from "./RegisterUser.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const requirements = [
   "A numeric character",
@@ -34,6 +35,14 @@ const passwordValidator = (password) => {
   return true;
 };
 
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+function useQuery() {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
+
 function RegisterUser() {
   const username = useRef(null);
   const password = useRef(null);
@@ -43,6 +52,39 @@ function RegisterUser() {
   const [emptyPasswordError, setEmptyPasswordError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [verifyError, setVerifyError] = useState(false);
+  const [emailVerified, setEmailVerified] = useState("waiting");
+  const [token, setToken] = useState("");
+
+  const navigate = useNavigate();
+  const query = useQuery();
+
+  useEffect(() => {
+    // Verify a token in query to check to see if the email is verified.
+    const tokenQuery = query.get("token");
+    console.log(tokenQuery);
+
+    axios
+      .post(
+        "/emails/verify/email",
+        {
+          token: tokenQuery,
+        },
+        {
+          baseURL: "http://localhost:3333",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        setToken(tokenQuery);
+        setEmailVerified("success");
+      })
+      .catch((err) => {
+        setToken("");
+        setEmailVerified("fail");
+      });
+  }, []); // Only once
 
   function validateUsername() {
     const _username = username.current.value;
@@ -108,6 +150,7 @@ function RegisterUser() {
             username: username.current.value,
             password: password.current.value,
             verify: verify.current.value,
+            token,
           },
           {
             baseURL: "http://localhost:3333",
@@ -122,6 +165,12 @@ function RegisterUser() {
           verify.current.value = "";
         });
     }
+  }
+
+  if (emailVerified === "waiting") {
+    return null;
+  } else if (emailVerified === "fail") {
+    navigate("/login", { replace: true });
   }
 
   return (
