@@ -1,3 +1,6 @@
+// Load application sepcific environment variables.
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const session = require("express-session");
@@ -184,9 +187,9 @@ app.use(
 // As the user navigates from page to page, the session itself can be authenticated using the built-in session strategy.
 app.use(passport.authenticate("session"));
 
-app.use("/", employeesRouter);
 app.use("/", authRouter);
 app.use("/", emailRouter);
+app.use("/", employeesRouter);
 
 // How to make a Self-Signed SSL.
 // https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu

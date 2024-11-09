@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
+import axios from "axios";
 
 const headers = [
   "Name",
@@ -41,14 +42,34 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3333/employees")
-      .then((response) => response.json())
-      .then((json) => {
-        setEmployees(json.data);
-        numberOfPages.value =
-          Math.floor(json.data.length / employeesPerPage) + 1;
+    // fetch("http://localhost:3333/employees")
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     setEmployees(json.data);
+    //     numberOfPages.value =
+    //       Math.floor(json.data.length / employeesPerPage) + 1;
+    //   })
+    //   .catch(setError);
+    const token = localStorage.getItem("token");
+    axios
+      .get("/employees", {
+        baseURL: "http://localhost:3333",
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch(setError);
+      .then((res) => {
+        const json = res.data;
+        if (json.status === "success") {
+          setEmployees(json.data);
+          numberOfPages.value =
+            Math.floor(json.data.length / employeesPerPage) + 1;
+        } else {
+          setEmployees([]);
+          numberOfPages.value = 1;
+        }
+      })
+      .catch((err) => {
+        setError(err);
+      });
   }, []);
 
   if (error) {

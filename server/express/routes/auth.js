@@ -5,10 +5,8 @@ const fs = require("fs");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const { getUser, verifyHash, genHash } = require("./users");
-const jwt = require("jsonwebtoken");
 const _ = require("lodash");
-
-const jwtSecret = "A cat on a lap";
+const { generateJwt } = require("./jwt");
 
 passport.use(
   new LocalStrategy(
@@ -65,15 +63,9 @@ passport.deserializeUser((user, cb) => {
 router.post("/login/password", passport.authenticate("local"), (req, res) => {
   if (req.user) {
     // Create a JWT.
-    const token = jwt.sign(
-      {
-        username: req.user.username,
-      },
-      jwtSecret,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const token = generateJwt({
+      username: req.user.username,
+    });
     // Set a JWT with a success status.
     res.cookie("access_token", token, {
       httpOnly: true,

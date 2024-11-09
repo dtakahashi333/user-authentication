@@ -2,6 +2,7 @@ import React, { useReducer, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import reactLogo from "./assets/react.svg";
 import styles from "./Login.module.css";
+import axios from "axios";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -39,18 +40,51 @@ function Login() {
     const _password = passwordTxt.current.value.trim();
 
     if (_username && _password) {
-      fetch("http://localhost:3333/login/password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: _username,
-          password: _password,
-        }),
-      })
-        .then((response) => response.json())
-        .then((json) => {
+      // fetch("http://localhost:3333/login/password", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     username: _username,
+      //     password: _password,
+      //   }),
+      // })
+      //   .then((response) => response.json())
+      //   .then((json) => {
+      //     if (json.status === "success") {
+      //       // Set the token in the localStorage.
+      //       // Because this still allows the token to be stolen by the adversary,
+      //       // set it to a cookie with the httpOnly attribute to make it safer.
+      //       localStorage.setItem("token", json.data.token);
+      //       navigate("/home", { replace: true });
+      //       // <Navigate to="/" state={{ from: location }} replace />
+      //     } else {
+      //       localStorage.removeItem("token");
+      //     }
+      //     setLoginError(false);
+      //   })
+      //   .catch((err) => {
+      //     localStorage.removeItem("token");
+      //     setLoginError(true);
+      //   });
+      axios
+        .post(
+          "/login/password",
+          {
+            username: _username,
+            password: _password,
+          },
+          {
+            baseURL: "http://localhost:3333",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          const json = res.data;
           if (json.status === "success") {
             // Set the token in the localStorage.
             // Because this still allows the token to be stolen by the adversary,
@@ -64,8 +98,7 @@ function Login() {
           setLoginError(false);
         })
         .catch((err) => {
-          localStorage.removeItem("token");
-          setLoginError(true);
+          console.log(err);
         });
       setUsernameError(false);
       setPasswordError(false);
